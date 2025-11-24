@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\NotifyLowStockJob;
+use App\Models\User;
+use App\Notifications\OrderPlacedNotification;
 
 class CheckoutController extends Controller
 {
@@ -48,14 +50,17 @@ class CheckoutController extends Controller
 
                 $total += $item->quantity * (float) $item->unit_price;
 
-                if ($product->stock_quantity <= $product->low_stock_threshold) {
-                    NotifyLowStockJob::dispatch($product->id);
-                }
+                // Low stock notification is handled by ProductObserver on save.
             }
 
             $order->update(['total' => number_format($total, 2, '.', '')]);
 
             $cart->items()->delete();
+
+            // Notify admins about the new order
+            User::where('is_admin', true)->get()->each(function ($admin) use ($order) {
+                $admin->notify(new OrderPlacedNotification($order));
+            });
         });
 
         return redirect()->route('orders.thankyou')->with('success', 'Order placed successfully.');
