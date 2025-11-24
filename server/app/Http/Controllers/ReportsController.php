@@ -19,7 +19,7 @@ class ReportsController extends Controller
     {
         $this->authorizeAdmin();
         $today = now()->startOfDay();
-        $tomorrow = now()->endOfDay();
+        $endOfDay = now()->endOfDay();
 
         $sales = OrderItem::query()
             ->select([
@@ -29,7 +29,7 @@ class ReportsController extends Controller
             ])
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('products', 'products.id', '=', 'order_items.product_id')
-            ->whereBetween('orders.created_at', [$today, $tomorrow])
+            ->whereBetween('orders.created_at', [$today, $endOfDay])
             ->groupBy('products.name')
             ->orderBy('products.name')
             ->get();

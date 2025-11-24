@@ -28,8 +28,16 @@ class NotifyLowStockJob implements ShouldQueue
             return;
         }
 
-        // Idempotency: if already notified and still low, skip
-        if (!is_null($product->low_stock_notified_at) && $product->stock_quantity <= $product->low_stock_threshold) {
+        // If stock is currently above threshold, do not notify (and clear any old flag).
+        if ($product->stock_quantity > $product->low_stock_threshold) {
+            if (!is_null($product->low_stock_notified_at)) {
+                $product->forceFill(['low_stock_notified_at' => null])->saveQuietly();
+            }
+            return;
+        }
+
+        // Idempotency: if already notified and still low, skip.
+        if (!is_null($product->low_stock_notified_at)) {
             return;
         }
 
