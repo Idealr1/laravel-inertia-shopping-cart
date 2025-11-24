@@ -22,6 +22,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // Admin user
+        User::factory()->create([
+            'name' => 'Admin User',
+            'email' => env('ADMIN_EMAIL', 'admin@example.com'),
+            'password' => bcrypt('password'),
+            'is_admin' => true,
+        ]);
+
         $this->call([
             ProductSeeder::class,
         ]);

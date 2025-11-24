@@ -8,6 +8,10 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\ProductAdminController;
+use App\Http\Controllers\Admin\OrderAdminController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
 
@@ -27,6 +31,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+
+    // Admin routes
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/products', [ProductAdminController::class, 'index'])->name('products.index');
+        Route::get('/products/create', [ProductAdminController::class, 'create'])->name('products.create');
+        Route::post('/products', [ProductAdminController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [ProductAdminController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductAdminController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductAdminController::class, 'destroy'])->name('products.destroy');
+
+        Route::get('/orders', [OrderAdminController::class, 'index'])->name('orders.index');
+
+        Route::get('/reports/daily', [ReportsController::class, 'daily'])->name('reports.daily');
+        Route::post('/reports/daily/send', [ReportsController::class, 'sendDaily'])->name('reports.daily.send');
+    });
 });
 
 require __DIR__.'/auth.php';
