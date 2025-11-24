@@ -11,6 +11,12 @@ Price: ${{ number_format($product->price, 2) }}
 
 Please restock soon.
 
+@isset($url)
+<x-mail::button :url="$url">
+View in Admin
+</x-mail::button>
+@endisset
+
 Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>
