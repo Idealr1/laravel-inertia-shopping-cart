@@ -57,7 +57,8 @@ class ReportsController extends Controller
     public function sendDaily(Request $request)
     {
         $this->authorizeAdmin();
-        SendDailySalesReportJob::dispatch();
+        // Run synchronously so the admin sees the log email immediately without a worker.
+        SendDailySalesReportJob::dispatchSync();
         return back()->with('success', 'Daily report queued.');
     }
 }

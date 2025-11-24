@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductAdminController;
 use App\Http\Controllers\Admin\OrderAdminController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
 
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/products', [ProductAdminController::class, 'index'])->name('products.index');
         Route::get('/products/create', [ProductAdminController::class, 'create'])->name('products.create');
         Route::post('/products', [ProductAdminController::class, 'store'])->name('products.store');
