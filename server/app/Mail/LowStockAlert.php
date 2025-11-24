@@ -30,6 +30,7 @@ class LowStockAlert extends Mailable
             markdown: 'emails.low_stock_alert',
             with: [
                 'product' => $this->product,
+                'url' => route('admin.products.edit', $this->product),
             ],
         );
     }

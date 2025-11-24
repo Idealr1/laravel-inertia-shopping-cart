@@ -19,6 +19,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'low_stock_notified_at' => 'datetime',
     ];
 
     public function cartItems(): HasMany
